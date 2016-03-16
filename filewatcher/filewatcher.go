@@ -19,14 +19,15 @@
 //     filewatcher.FWatcher.RmFolder("folderPath",callback) /* 移除对文件夹的监听 */
 package filewatcher
 
+import(
+//	"github.com/fsnotify/fsnotify"
+)
+
 type (
     // fWatcher fWatcher结构体,用于实现文件监听的主要功能
     fWatcher struct {
-        events map[string] []FCallback
+        events map[string] []func(string)error
     }
-
-    // FCallback FCallback回调,用于当监听的文件发生变化时的回调函数
-    FCallback func(string)error
 )
 
 var(
@@ -48,21 +49,21 @@ func (fw *fWatcher) Init() error {
 }
 
 // AddFile 添加文件监听
-func (fw *fWatcher) AddFile(filePath string,callback FCallback) error {
+func (fw *fWatcher) AddFile(filePath string,callback func(string)error) error {
     return nil
 }
 
 // AddFloder 添加文件夹变化
-func (fw *fWatcher) AddFolder(folderPath string,callback FCallback) error {
+func (fw *fWatcher) AddFolder(folderPath string,callback func(string)error) error {
     return nil
 }
 
 // RmFile 移除对某文件的事件监听
-func (fw *fWatcher) RmFile(filePath string,callback FCallback) error {
+func (fw *fWatcher) RmFile(filePath string,callback func(string)error) error {
     return nil
 }
 
 // RmFolder 移除对某文件夹的事件监听
-func (fw *fWatcher) RmFolder(folderPath string,FCallback FCallback) error {
+func (fw *fWatcher) RmFolder(folderPath string,FCallback func(string)error) error {
     return nil
 }

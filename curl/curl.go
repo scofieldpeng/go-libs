@@ -36,7 +36,7 @@ type curl struct {
 	resp    http.Response          //请求返回的response对象
 }
 
-// NewSenderSV 返回一个wechatSV结构体对象
+// NewCurl 返回一个NewCurl结构体对象
 func NewCurl() *curl {
 	return &curl{
 		url:     "",
