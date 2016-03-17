@@ -14,10 +14,11 @@
 //     sectionVal,ok := config.Config.ReadSection("section")
 //
 // 3. 如果需要监听某个配置文件的变化采取不同的动作,当某个配置文件变化时会通知且出发回调的执行
-//    第一个参数为某个section中的某个name配置项的变化,如果要监听某个section内任意一个配置
-//    项的变化,第一个参数设置为section:*,如果要监听多个数据,格式为section1:name1|section2:name2
-//    第二个参数为配置变化后的回调函数,需要设置为func(string)格式
-//    config.Config.AddEventListener("section:name",func(newValue))
+//    第一个参数为某个section或者某个node的名字
+//    第二个参数为该回调的名称,必须设置为唯一,否则可能设置事件触发的回调函数被其他函数给覆盖
+//    第三个参数为配置变化后的回调函数,需要设置为func(string)格式
+//    config.Config.AddSectionListener("section","callbackName",func(oldValue,newValue))
+//    config.Config.AddNodeListener("section:node","callbackName",func(oldValue,newValue))
 // 4. 重新载入配置
 //    err := config.Config.Reload()
 package config
@@ -55,9 +56,9 @@ func (c *config) Init(path string) error {
 	if err := c.load(); err != nil {
 		return err
 	}
-	// 载入文件监听
-	if err := c.configChangeListen(); err != nil {
-		return err
+	// 载入文件监听(当文件监听包初始化或者运行时)
+	if filewatcher.FWatcher.Status() != filewatcher.STATUS_STOP {
+		c.configChangeListen()
 	}
 
 	return nil
@@ -86,8 +87,8 @@ func (c *config) load() error {
 }
 
 // configChangeListen 配置文件变化监听
-func (c *config) configChangeListen() error {
-	return filewatcher.FWatcher.AddFile(c.path, c.configChangeTrigger)
+func (c *config) configChangeListen() {
+	filewatcher.FWatcher.AddFile(c.path, "configChangeTrigger", c.configChangeTrigger)
 }
 
 // configChangeTrigger 配置文件变化时的触发器

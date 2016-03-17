@@ -37,6 +37,7 @@ type (
 )
 
 var (
+	STATUS_STOP int = 0 // 停止状态
 	STATUS_INIT int = 1 // 初始化的状态
 	STATUS_RUN  int = 2 // 运行的状态
 )
