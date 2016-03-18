@@ -23,6 +23,7 @@ import (
 	"errors"
 	"github.com/fsnotify/fsnotify"
 	"log"
+	"path/filepath"
 )
 
 type (
@@ -91,7 +92,19 @@ func (fw *fWatcher) Run() {
 
 // watcherTrigger TODO 事件监听触发函数,该函数将便利用户设置的监听文件/文件夹,如果有对变化文件/文件夹的监听,那么一一进行用户回调函数的触发
 func (fw *fWatcher) watcherTrigger(changedPath string) {
-
+	fileDir := filepath.Dir(changedPath)
+	 // 遍历文件监听,是否有监听回调
+	if events,ok := fw.folderEvents[fileDir];ok{
+		for _,callback:=range events {
+			go callback(fileDir)
+		}
+	}
+	 // 便利文件夹监听事件,查看是否有监听回调
+	if events,ok := fw.fileEvents[changedPath];ok{
+		for _,callback := range events{
+			go callback(changedPath)
+		}
+	}
 }
 
 // Status 获取当前程序运行状态
