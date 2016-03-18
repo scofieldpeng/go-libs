@@ -45,7 +45,10 @@ var (
 )
 
 func init() {
-	Config = config{}
+	Config = config{
+        nodeEvents:make(map[string]map[string]func(string,string)),
+        sectionEvents:make(map[string]map[string]func(string,string)),
+    }
 }
 
 // init 读取配置文件,如果读取失败,返回错误
