@@ -9,6 +9,7 @@ import (
 	"time"
 	"path/filepath"
 	"os"
+	"crypto/sha1"
 )
 
 // Crc32 将指定的数据加密和处理为crc32
@@ -27,15 +28,17 @@ func Md5(ori []byte) string {
 }
 
 // RandomString 返回一个随机字符串,默认8位长度,如果需要指定位数,传入要指定的位数,最长不超过32位
-func RandomString(lenght ...int) string {
-	if len(lenght) == 0 {
-		lenght = []int{8}
+func RandomString(length ...int) string {
+	if len(length) == 0 {
+		length = make([]int,1)
+		length[0] = 32
 	}
-
-	rand.Seed(time.Now().Unix())
-	res := Md5([]byte(strconv.Itoa(rand.Int())))
-
-	return res[0:lenght[0]]
+	if length[0] > 32 || length[0] < 1{
+		length[0] = 32
+	}
+	rand.Seed(time.Now().UnixNano())
+	randStr := fmt.Sprintf("%x",sha1.Sum([]byte(strconv.Itoa(rand.Int()))))
+	return randStr[0:length[0]]
 }
 
 // AppDir 应用目录绝对路径
