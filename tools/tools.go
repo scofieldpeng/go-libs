@@ -7,6 +7,8 @@ import (
 	"math/rand"
 	"strconv"
 	"time"
+	"filepath"
+	"os"
 )
 
 // Crc32 将指定的数据加密和处理为crc32
@@ -34,4 +36,9 @@ func RandomString(lenght ...int) string {
 	res := Md5([]byte(strconv.Itoa(rand.Int())))
 
 	return res[0:lenght[0]]
+}
+
+// AppDir 应用目录绝对路径
+func AppDir() string{
+	return filepath.Dir(os.Args[0])
 }
