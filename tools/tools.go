@@ -7,6 +7,8 @@ import (
 	"math/rand"
 	"strconv"
 	"time"
+	"filepath"
+	"os"
 )
 
 // Crc32 将指定的数据加密和处理为crc32
