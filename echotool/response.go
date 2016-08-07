@@ -2,20 +2,31 @@
 package echotool
 
 import (
-	"github.com/scofieldpeng/echo"
+	"github.com/labstack/echo"
 	"net/http"
 )
 
-// EchoJsonOk json格式返回200状态码下的数据
-func EchoJsonOk(ctx *echo.Context, data interface{}) error {
-	if assertData, ok := data.(string); ok {
-		return ctx.JSON(http.StatusOK, map[string]interface{}{"data": assertData})
-	}
-	return ctx.JSON(http.StatusOK, data)
+// BackError 向客户端返回错误,httpCode为http错误码,errcode为返回的app错误码,errmsg为返回的APP错误信息
+func BackError(ctx echo.Context, httpCode, errcode int, errmsg string) error {
+	return ctx.JSON(httpCode, map[string]interface{}{
+		"errcode": errcode,
+		"errmsg":  errmsg,
+	})
 }
 
-// EchoJsonError json格式返回httpStatusCode的HTTP状态码下的错误信息,参数errCode为具体的错误码,msg为string类型的错误原因
-func EchoJsonError(ctx *echo.Context, httpStatusCode, errCode int, msg string) error {
-	errJson := map[string]interface{}{"errcode": errCode, "errmsg": msg}
-	return ctx.JSON(httpStatusCode, errJson)
+// BackUnauthorized 需要登录授权
+func BackUnAuthorized(ctx echo.Context) error {
+	return BackError(ctx, http.StatusUnauthorized, 401, "unauthorized error")
+}
+
+// BackServerError 服务器内部错误
+func BackServerError(ctx echo.Context, errcode int) error {
+	return BackError(ctx, http.StatusInternalServerError, errcode, "server error")
+}
+
+// BackOk 通用返回
+func BackOk(ctx echo.Context) error {
+	return ctx.JSON(http.StatusOK, map[string]bool{
+		"status": true,
+	})
 }
